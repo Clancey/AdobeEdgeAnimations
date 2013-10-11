@@ -13,11 +13,11 @@ namespace AdobeEdgeAnimations
 {
 	public static class StageExtensions
 	{
-		public static Task<Stage> Load()
+		public static Task<Stage> Load(string scriptName)
 		{
 			var tcs = new TaskCompletionSource<Stage> ();
 			var webView = new UIWebView ();
-
+			UIApplication.SharedApplication.Windows[0].Add (webView);
 			//this.window.AddSubview (webView);
 			webView.LoadError += (object sender, UIWebErrorArgs e) => {
 				Console.WriteLine(e.Error);
@@ -26,12 +26,13 @@ namespace AdobeEdgeAnimations
 			webView.LoadFinished += (object sender, EventArgs e) => {
 
 				var data = webView.EvaluateJavascript ("window.JSON.stringify(symbols);"); 
-
+				webView.RemoveFromSuperview();
 				data = data.Replace("\"${_", "\"").Replace("}\"","\"");
 				var stage = StageParser.Parse(data);
 				tcs.TrySetResult(stage);
 			};
-			webView.LoadHtmlString("<script type=\"text/javascript\" src=\"index_edge.js\"></script>", new NSUrl(NSBundle.MainBundle.ResourcePath,true));
+
+			webView.LoadHtmlString("<script type=\"text/javascript\" src=\"" + scriptName + "\"></script>", new NSUrl(NSBundle.MainBundle.ResourcePath,true));
 			return tcs.Task;
 		}
 		public static UIView ToUIView (this Stage stage)

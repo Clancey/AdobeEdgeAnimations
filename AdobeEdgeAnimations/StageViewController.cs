@@ -20,7 +20,7 @@ namespace AdobeEdgeAnimations
 
 		public virtual async void LoadStage ()
 		{
-			Stage = await StageExtensions.Load ();
+			Stage = await StageExtensions.Load ("index_edge.js");
 			View = Stage.ToUIView ();				
 			Stage.Animate ();			
 		}

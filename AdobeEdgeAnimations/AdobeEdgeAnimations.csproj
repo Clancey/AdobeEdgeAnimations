@@ -122,7 +122,6 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <XamarinComponentReference Include="json.net">
-      <InstallationInProgress>True</InstallationInProgress>
       <Version>4.5.11</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
@@ -138,5 +137,6 @@
     <BundleResource Include="Resources\images\success%402x.png" />
     <BundleResource Include="Resources\images\text.png" />
     <BundleResource Include="Resources\images\ui.png" />
+    <BundleResource Include="Default-568h%402x.png" />
   </ItemGroup>
 </Project>
