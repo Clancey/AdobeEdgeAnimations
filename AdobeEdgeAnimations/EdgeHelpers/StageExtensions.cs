@@ -226,8 +226,10 @@ namespace AdobeEdgeAnimations
 				frame.Tween.SetState(frame.ObjectName,stage);
 				return;
 			}
-//			if (frame.Easing == EdgeEasing.EaseOut)
-//				UIView.SetAnimationCurve (UIViewAnimationCurve.EaseOut);
+			if (frame.Easing == EdgeEasing.EaseOut)
+				UIView.SetAnimationCurve (UIViewAnimationCurve.EaseOut);
+			else
+				UIView.SetAnimationCurve (UIViewAnimationCurve.Linear);
 			UIView.Animate (((double)frame.Duration) / 1000, () => {
 				frame.Tween.SetState(frame.ObjectName,stage);
 			});
