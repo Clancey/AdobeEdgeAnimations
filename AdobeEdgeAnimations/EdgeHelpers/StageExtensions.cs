@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using MonoTouch.CoreAnimation;
 using MonoTouch.CoreGraphics;
 using System.Threading.Tasks;
+using MonoTouch.JavaScriptCore;
+using System.IO;
 
 namespace AdobeEdgeAnimations
 {
@@ -15,25 +17,17 @@ namespace AdobeEdgeAnimations
 	{
 		public static Task<Stage> Load(string scriptName)
 		{
-			var tcs = new TaskCompletionSource<Stage> ();
-			var webView = new UIWebView ();
-			UIApplication.SharedApplication.Windows[0].Add (webView);
-			//this.window.AddSubview (webView);
-			webView.LoadError += (object sender, UIWebErrorArgs e) => {
-				Console.WriteLine(e.Error);
-				tcs.TrySetException(new Exception(e.Error.ToString()));
-			};
-			webView.LoadFinished += (object sender, EventArgs e) => {
+			return	Task.Factory.StartNew(()=>{
+				var script = File.ReadAllText (scriptName);
+				script += Environment.NewLine + "var js = JSON.stringify(symbols);";
+				var context = new JSContext();
+				var test = context.EvaluateScript (script);
 
-				var data = webView.EvaluateJavascript ("window.JSON.stringify(symbols);"); 
-				webView.RemoveFromSuperview();
-				data = data.Replace("\"${_", "\"").Replace("}\"","\"");
-				var stage = StageParser.Parse(data);
-				tcs.TrySetResult(stage);
-			};
-
-			webView.LoadHtmlString("<script type=\"text/javascript\" src=\"" + scriptName + "\"></script>", new NSUrl(NSBundle.MainBundle.ResourcePath,true));
-			return tcs.Task;
+				var result = context[(NSString)"js"].ToString();
+				result = result.Replace("\"${_", "\"").Replace("}\"","\"");
+				var stage = StageParser.Parse(result);
+				return stage;
+			});
 		}
 		public static UIView ToUIView (this Stage stage)
 		{
