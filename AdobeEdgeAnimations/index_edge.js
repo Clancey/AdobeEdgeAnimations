@@ -1,7 +1,7 @@
 /**
  * Adobe Edge: symbol definitions
  */
-//(function($, Edge, compId){
+(function($, Edge, compId){
 //images folder
 var im='images/';
 
@@ -138,3 +138,14 @@ var symbols = {
    }
 }
 };
+
+
+Edge.registerCompositionDefn(compId, symbols, fonts, resources);
+
+/**
+ * Adobe Edge DOM Ready Event Handler
+ */
+$(window).ready(function() {
+     Edge.launchComposition(compId);
+});
+})(jQuery, AdobeEdge, "EDGE-30914175");

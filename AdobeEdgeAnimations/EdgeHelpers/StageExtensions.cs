@@ -18,7 +18,13 @@ namespace AdobeEdgeAnimations
 		public static Task<Stage> Load(string scriptName)
 		{
 			return	Task.Factory.StartNew(()=>{
+
 				var script = File.ReadAllText (scriptName);
+				if(script.Contains("(  function($, Edge, compId){"))
+					script = script.Replace("(  function($, Edge, compId){","");
+				var endIndex= script.IndexOf("Edge.registerC");
+				if(endIndex > 0)
+					script = script.Substring(0,endIndex);
 				script += Environment.NewLine + "var js = JSON.stringify(symbols);";
 				var context = new JSContext();
 				var test = context.EvaluateScript (script);
